@@ -1,0 +1,78 @@
+// Automatic FlutterFlow imports
+import '/backend/schema/structs/index.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/custom_code/actions/index.dart'; // Imports other custom actions
+import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:flutter/material.dart';
+// Begin custom action code
+// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
+
+// Set your action name, define your arguments and return parameter,
+// and then add the boilerplate code using the button on the right!
+import 'dart:async';
+import 'dart:ui';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+
+//Add the depentency - printing: ^5.11.0 and pdf: ^3.10.4
+Future pdfImageDownload(BuildContext context) async {
+  List<pw.Widget> widgets = [];
+  List<List> details = [
+    [
+      1,
+      "4:30 pm",
+      'ram',
+    ],
+    [
+      2,
+      "5:30 pm",
+      'gam',
+    ],
+    [
+      3,
+      "4:30 pm",
+      'ham',
+    ],
+  ];
+
+  final List<List> elements = [
+    ['Appointments', 'Booking timing', 'patient Name'],
+    for (var detail in details) detail
+  ];
+  
+
+  final tableRow = pw.Expanded(
+    child: pw.Column(
+      children: [
+        for (var element in elements)
+          pw.Row(
+            children: [
+              pw.Expanded(
+                  child: pw.Text(element[0].toString(),
+                      textAlign: pw.TextAlign.left)),
+              pw.Expanded(
+                  child: pw.Text(element[1], textAlign: pw.TextAlign.right)),
+              pw.Expanded(
+                  child: pw.Text(element[2], textAlign: pw.TextAlign.right)),
+            ],
+          )
+      ],
+    ),
+  );
+
+  widgets.add(tableRow);
+  final pdf = pw.Document();
+  pdf.addPage(
+    pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      build: (context) => widgets,
+    ),
+  );
+
+  await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save());
+}
